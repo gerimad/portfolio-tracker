@@ -18,6 +18,9 @@ class Portfolio:
             self.assets[asset.name] = asset
             self.quantities[asset.name] = quantity
             self.prices[asset.name] = price
+        else:
+            raise("Asset not found in the portfolio.")
+            
 
     def update_price(self, asset_name: str, new_price: float) -> None:
         """
@@ -26,7 +29,7 @@ class Portfolio:
         if asset_name in self.prices:
             self.prices[asset_name] = new_price
 
-    def get_asset_info(self, asset_name: str) -> tuple[str, int, float]:
+    def get_asset_info(self, asset_name: str) -> tuple[Asset, int, float]:
         """
         Get the quantity and price for an asset.
         """
@@ -34,7 +37,8 @@ class Portfolio:
             if asset_name in self.quantities:
                 quantity = self.quantities[asset_name]
                 price = self.prices[asset_name]
-                return (asset_name, quantity, price)
+                asset = self.assets[asset_name]
+                return (asset, quantity, price)
 
     
     def calculate_portfolio_value(self) -> float:
@@ -74,3 +78,30 @@ class Portfolio:
             "total_gain_loss" : total_gain_loss,
             "percentage_return": precentage_return,
         }
+    
+    def gen_asset_report(self, asset_name) -> str:
+        """
+        Generate reports showing the details of each asset, including name, quantity, purchase price, current price, and gain/loss.
+        """
+        if asset_name in self.assets:
+            if asset_name in self.quantities and asset_name in self.prices:
+                asset, quant, price = self.get_asset_info(asset_name)
+                current_price = asset.current_price()
+                gain_loss = (current_price - price) * quant
+                return f"Asset: {asset_name}\n" \
+                       f"Quantity: {quant}\n" \
+                       f"Purchase Price: {price}\n" \
+                       f"Current Price: {current_price}\n" \
+                       f"Gain/Loss: {gain_loss}"
+            else:
+                return "Missing data for the asset."
+        else:
+            return "Asset not found in the portfolio."
+        
+    def gen_portfolio_report(self) -> str:
+        report = ""
+        for asset_name in self.assets:
+            report += self.gen_asset_report(asset_name) + "\n\n"
+        return report
+
+

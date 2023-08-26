@@ -50,8 +50,8 @@ class TestPortfolio(unittest.TestCase):
 
         gain_loss = self.portfolio.calculate_gain_loss()
         for asset_name, _ in self.portfolio.assets.items():
-            name, quan, price = self.portfolio.get_asset_info(asset_name)
-            self.assertEqual(gain_loss[name], (self.portfolio.assets[asset_name].current_price() - price) * quan)
+            asset, quan, price = self.portfolio.get_asset_info(asset_name)
+            self.assertEqual(gain_loss[asset_name], (asset.current_price() - price) * quan)
 
     def test_calculate_portfolio_performance(self):
         asset1 = Asset("Apple Inc.", "Stock", "Technology", "Consumer Electronics")
@@ -66,8 +66,8 @@ class TestPortfolio(unittest.TestCase):
         total_gain = 0
         init_investment = 0 
         for asset_name, _ in self.portfolio.assets.items():
-            name, quant, price = self.portfolio.get_asset_info(asset_name)
-            total_gain += (self.portfolio.assets[name].current_price(current_price_dummy) - price) * quant
+            asset, quant, price = self.portfolio.get_asset_info(asset_name)
+            total_gain += (asset.current_price(current_price_dummy) - price) * quant
             init_investment += quant * price
         
         self.assertEqual(perf['total_gain_loss'], total_gain)
